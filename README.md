@@ -9,7 +9,7 @@ webpack v5.30.0
 webpack-cli v4.6.0
 ```
 
-## 1. webpackの概要
+## webpackの概要
 
 フロントエンド開発用の**モジュールバンドラ**
 複数のJSファイル(モジュール)の依存性を解決し、一つにまとめてくれるツール
@@ -257,5 +257,51 @@ public/index.html
 </html>
 ```
 
+## ローダー
 
+ローダーは**色々な形式のファイルをバンドルできるように変換する**プログラム
+例えばCSSや画像などはそのままだとバンドルに含めることはできないのでwebpackでバンドルする前に一度ローダーでファイルを変換する必要がある
+
+### babel-loader
+
+ES6以降のコードをES5のコードに変換する
+
+```shell
+npm install --save-dev babel-loader@8.2.2 @babel/core@7.13.10 @babel/preset-env@7.13.12
+```
+
+* @babel/core : Babelの本体
+* @babel/preset-env : Babelの変換処理を実行する際に使うプラグイン
+* babel-loader :  webpackにてbabelを使うためのローダー
+
+webpack.config.js
+
+```js
+module.exports = {
+  mode: 'development', //develop production none
+  entry: './src/js/app.js', //エントリーポイント
+  output: {
+    //絶対パスを指定、OSにより指定が異なるのでpathモジュールを使う
+    path: path.resolve(__dirname, 'public'), 
+    filename: 'js/bundle.js',
+  },
+  modules: {
+    rules: [
+      {
+        test: /\.js$/,
+        include: path.resolve(__dirname, 'src/js'),//ローダーの変換対象となるディレクトリ
+        use: 'babel-loader',
+      }
+    ]
+  }
+}
+```
+
+babel.config.js (Babelの設定ファイル、webpack.config.jsにも書けるが可読性のためにファイルを分ける)
+
+```js
+module.exports = {
+  presets: ['@babel/preset-env']
+}
+```
 

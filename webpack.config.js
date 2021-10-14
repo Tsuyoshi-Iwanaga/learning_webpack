@@ -7,5 +7,14 @@ module.exports = {
     //絶対パスを指定、OSにより指定が異なるのでpathモジュールを使う
     path: path.resolve(__dirname, 'public'), 
     filename: 'js/bundle.js',
+  },
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        include: path.resolve(__dirname, 'src/js'),
+        use: 'babel-loader',
+      }
+    ]
   }
 }
