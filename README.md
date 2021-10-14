@@ -780,3 +780,10 @@ webpack.common.js
 しっかりしたソースマップであればビルド速度は遅くなるのでおすすめは上記の設定
 
 上記はローダーで変換された後のコードなので、デバッグがしづらければevel-cheap-module-source-mapもしくはeval-source-mapを指定するとよい
+
+### HTMLの自動生成
+
+```shell
+npm install --save-dev html-webpack-plugin
+```
+

@@ -1,6 +1,7 @@
 const path = require("path")
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = {
   watch: true,
@@ -60,5 +61,15 @@ module.exports = {
       filename: './css/style.css'
     }),
     // new BundleAnalyzerPlugin()
+    new HtmlWebpackPlugin({
+      filename: 'index.html',
+      template: './src/ejs/index.ejs',
+      chunks: [ 'app' ],
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'search.html',
+      template: './src/ejs/search.ejs',
+      chunks: [ 'search' ],
+    }),
   ]
 }
