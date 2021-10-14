@@ -770,3 +770,13 @@ webpack.common.js
 
 ### ソースマップ
 
+webpack.common.js
+
+```js
+  devtool: 'eval-cheap-module-source-map',
+```
+
+ソースマップの種類を変更することもできる（公式を確認のこと)
+しっかりしたソースマップであればビルド速度は遅くなるのでおすすめは上記の設定
+
+上記はローダーで変換された後のコードなので、デバッグがしづらければevel-cheap-module-source-mapもしくはeval-source-mapを指定するとよい
