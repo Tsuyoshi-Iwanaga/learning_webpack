@@ -378,3 +378,47 @@ CSSにベンダープレフィックスを自動挿入したり、CSSの圧縮�
 
 ここでは有名なAutoprefixerを用いてベンダープレフィックスを自動でつけるようにしてみる
 
+```shell
+npm install --save-dev postcss-loader@5.2.0 postcss@8.2.8 autoprefixer@10.2.5
+```
+
+* postcss : 本体
+* post-css-loader : CSS変換をwebpackで行うためのローダー
+* autoprefixer : プレフィックスを自動付与するプラグイン
+
+style.scss
+
+```scss
+@import './_variables';
+body {
+  background: $black;
+  color: $white;
+  user-select: none;
+}
+```
+
+webpack.config.js
+
+```js
+{
+  test: /\.scss$/,
+    include: path.resolve(__dirname, 'src/scss'),
+      //複数のローダーがある場合は配列で記載する、ローダーは記載順とは逆から読み込まれるので注意
+      use: [ 'style-loader', 'css-loader', 'postcss-loader', 'sass-loader' ],
+}
+```
+
+postcss用の設定ファイルをpostcss.config.jsというファイル名で作成
+
+```js
+module.exports = {
+  plugins: [require('autoprefixer')]
+}
+```
+
+これでビルドするとbodyタグにつけたuser-selectのCSSルールに対して自動でプレフィックスが付与される
+
+### ローダーの設定方法について
+
+
+

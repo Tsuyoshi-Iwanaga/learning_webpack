@@ -19,7 +19,7 @@ module.exports = {
         test: /\.scss$/,
         include: path.resolve(__dirname, 'src/scss'),
         //複数のローダーがある場合は配列で記載する、ローダーは記載順とは逆から読み込まれるので注意
-        use: [ 'style-loader', 'css-loader', 'sass-loader' ],
+        use: [ 'style-loader', 'css-loader', 'postcss-loader', 'sass-loader' ],
       }
     ]
   }
