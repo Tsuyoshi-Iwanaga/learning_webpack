@@ -3,6 +3,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
 module.exports = {
+  watch: true,
   // entry: './src/js/app.js', 単一エントリーポイント
   entry: {
     app: './src/js/app.js',

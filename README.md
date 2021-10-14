@@ -628,3 +628,31 @@ module.exports = {
 これで実行すると/public/js/配下にapp.bundle.jsとsearch.bundle.jsが出力される
 複数のエンドポイントを作成することができた
 
+### watchモード
+
+watchモードを有効化するとバンドル対象のファイルに変更が入った時に自動でビルドを動かすことができる
+
+webpack.common.js
+
+```js
+module.exports = {
+  watch: true,
+  ...
+}
+```
+
+またwebpackの実行時に--watchオプションをつけることでも有効にできる
+
+```shell
+npx webpack --watch
+```
+
+### Asset Moduleで画像をバンドルする
+
+webpack5ではAsset Modulesというアセットファイル(画像やフォントなど)を扱う機能が導入された
+今回はSassファイルから読み込んでいる画像をDataURLに変換しバンドルに含めて出力してみる
+
+※webpack4まではurl-loaderが必要だったが、webpack5からいらなくなった
+
+
+
