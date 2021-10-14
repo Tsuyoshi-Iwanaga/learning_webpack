@@ -35,7 +35,11 @@ module.exports = {
       },
       {
         test: /\.(jpe?g|gif|png|svg)$/,
-        type: 'asset/inline' //Asset Modulesのタイプ、url-loaderと同じことをやりたければasset/inlineを指定
+        type: 'asset/resource', //Asset Modulesのタイプ、file-loaderと同じことをやりたければasset/resourceを指定
+        generator: {
+          filename: 'images/[name][ext]',
+          publicPath: './',
+        }
       }
     ],
   },

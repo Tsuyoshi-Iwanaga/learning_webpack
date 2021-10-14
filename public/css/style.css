@@ -6,3 +6,17 @@ body {
       -ms-user-select: none;
           user-select: none;
 }
+
+h1 {
+  display: flex;
+  align-items: center;
+  font-size: 15px;
+}
+h1:before {
+  content: "";
+  background: url(/images/profile.png) no-repeat;
+  background-size: 100%;
+  margin-right: 5px;
+  width: 18px;
+  height: 18px;
+}

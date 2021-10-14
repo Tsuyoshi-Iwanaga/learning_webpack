@@ -670,3 +670,30 @@ webpack.common.js
 CSSはstyle-loaderを使ってhtml内部に展開されるようにする
 こうするとCSS内部のurlで読み込んだ画像はDataURLに変換されてバンドルに含まれるようになる
 
+### Asset Moduleで画像を出力する
+
+DataURLに変換すると元の画像よりもファイルサイズが大きくなったりJSの実行に時間がかかるようになるため、場合によってはバンドルに含めずにそのまま指定ディレクトリに出力したいこともある
+
+またこの際にはscss側のファイルパスを指定ディレクトリに書き換える必要がある点にも気を付ける
+
+※webpack4まではfile-loaderが必要だったが、webpack5ではいらなくなった
+
+webpack.common.js
+
+```js
+  module: {
+    rules: [
+...
+      {
+        test: /\.(jpe?g|gif|png|svg)$/,
+        type: 'asset/resource', //Asset Modulesのタイプ、file-loaderと同じことをやりたければasset/resourceを指定
+        generator: {
+          filename: 'images/[name][ext]', //nameにはファイル名、extには拡張子
+          publicPath: './', //出力されるCSSなどに指定される画像のパス
+        }
+      }
+    ],
+  },
+```
+
+今度はDataURLに変換されず、./images/profile.pngのように外部ファイルを参照するようになる
