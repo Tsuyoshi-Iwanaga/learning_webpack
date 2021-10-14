@@ -1,12 +1,17 @@
 const path = require("path")
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
 module.exports = {
-  entry: './src/js/app.js', //エントリーポイント
+  // entry: './src/js/app.js', 単一エントリーポイント
+  entry: {
+    app: './src/js/app.js',
+    search: './src/js/search.js',
+  },
   output: {
     //絶対パスを指定、OSにより指定が異なるのでpathモジュールを使う
     path: path.resolve(__dirname, 'public'), 
-    filename: 'js/bundle.js',
+    filename: 'js/[name].bundle.js',
   },
   module: {
     rules: [
@@ -33,6 +38,7 @@ module.exports = {
     new MiniCssExtractPlugin({
       //output.pathを起点にCSSが出力される
       filename: './css/style.css'
-    })
+    }),
+    // new BundleAnalyzerPlugin()
   ]
 }

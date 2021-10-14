@@ -569,3 +569,62 @@ module.exports = {
 npm install --save-dev webpack-bundle-analyzer@4.4.0
 ```
 
+webpack.common.js
+
+```js
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+...
+module.exports = {
+  ...
+  plugins: [new BundleAnalyzerPlugin]
+}
+```
+
+実行するとブラウザでhttp://127.0.0.1:8888が立ち上がり、バンドルの内訳が確認できるようになる
+
+## webpackの様々な機能
+
+### 複数のエントリーポイントからバンドルを出力する
+
+/src/js/search.js
+
+```js
+import $ from 'jquery'
+import '../scss/style.scss'
+
+$('body').text('Serarch'
+```
+
+/public/search.html (すでにあるindex.htmlもJSの読み込み箇所を修正)
+
+```html
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="./css/style.css">
+<title>search</title>
+</head>
+<body>
+<script src="js/search.bundle.js"></script>
+</body>
+</html>
+```
+
+webpack.common.js
+
+```js
+module.exports = {
+  ...
+  entry: {
+    app: './src/js/app.js',
+    search: './src/js/search.js',
+    ...
+    filename: 'js/[name].bundle.js',
+  }
+}
+```
+
+これで実行すると/public/js/配下にapp.bundle.jsとsearch.bundle.jsが出力される
+複数のエンドポイントを作成することができた
+
