@@ -236,9 +236,26 @@ export default sub
 import sub, { add } form './math.js'
 ```
 
-### バンドラを生成
+### バンドラを生成しHTMLに読み込ませてみる
 
 ```shell
 npm run build
 ```
+
+public/index.html
+
+```html
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>getting started webpack</title>
+</head>
+<body>
+<script src="js/bundle.js"></script>
+</body>
+</html>
+```
+
+
 
