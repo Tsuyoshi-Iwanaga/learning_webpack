@@ -418,7 +418,96 @@ module.exports = {
 
 これでビルドするとbodyタグにつけたuser-selectのCSSルールに対して自動でプレフィックスが付与される
 
-### ローダーの設定方法について
+## プラグイン
 
+プラグインはwebpackを拡張させるためのプログラム
+これを利用することでバンドル実行時に追加の処理を挟み込むことができる
 
+バンドルの開始から完了までは様々なプロセスがあり、どこのタイミングに処理を挟み込むかはプラグインごとに異なっている
+
+### web pack-merge
+
+webpackの設定をマージするためのプラグイン
+これを利用することで開発用/本番用で共通の設定は一つのファイルで管理しつつ、差分がある部分は別の設定ファイルで管理することができるようになる
+
+```shell
+npm install --save-dev webpack-merge@5.7.3 terser-webpack-plugin@5.1.1
+```
+
+* webpack-merge : 設定ファイルをマージするためのプラグイン
+* terser-webpack-plugin : webpackがproductionモードで実行された時にJSを圧縮するために使われるプラグイン、設定ファイルに記述を加えることでデフォルトの設定を上書きできる。
+  デフォルトだとJS内のconsole.logが削除されないのでこの設定を変更してみる
+  またjqueryなど外部モジュールのライセンス情報などがデフォルトだと抽出されるが、これも今回削除してみる
+
+package.json
+
+```json
+"scripts": {
+  "dev": "webpack --config webpack.dev.js",
+  "build": "webpack --config webpack.prod.js"
+}
+```
+
+src/app.js
+
+```js
+console.log(priceAfterApplyCoupon) //console.logの記述を追加
+```
+
+webpack.common.js (共通の設定用)
+これはここまで使っていたwebpack.config.jsのmodeのところだけ削除してリネームする
+
+```js
+// mode: 'development', この記述を削除
+```
+
+webpack.dev.js(開発用)
+
+```js
+const { merge } = require('webpack-merge')
+const commonConfig = require('./webpack.common')
+
+module.exports = merge(commonConfig, {
+  mode: 'development',
+  devtool: 'eval-cheap-module-source-map',
+})
+```
+
+webpack.prod.js(本番用)
+
+```js
+const { merge } = require('webpack-merge')
+const TerserPlugin = require('terser-webpack-plugin')
+const commonConfig = require('./webpack.common')
+
+module.exports = merge(commonConfig, {
+  mode: 'production',
+  optimization: {
+    minimizer: [
+      new TerserPlugin({
+        //ライブラリのライセンスコメントを抽出したファイルを生成しない
+        extractComments: false,
+        terserOptions: {
+          compress: {
+            //consoleの記述を削除する
+            drop_console: true,
+          }
+        }
+      })
+    ]
+  }
+})
+```
+
+開発用のビルド
+
+```shell
+npm run dev
+```
+
+本番用のビルド
+
+```shell
+npm run build
+```
 
