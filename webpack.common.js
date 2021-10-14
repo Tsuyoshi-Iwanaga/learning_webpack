@@ -26,12 +26,16 @@ module.exports = {
         include: path.resolve(__dirname, 'src/scss'),
         //複数のローダーがある場合は配列で記載する、ローダーは記載順とは逆から読み込まれるので注意
         use: [
-          MiniCssExtractPlugin.loader,
-          // 'style-loader',
+          // MiniCssExtractPlugin.loader,
+          'style-loader',
           'css-loader',
           'postcss-loader',
           'sass-loader'
         ],
+      },
+      {
+        test: /\.(jpe?g|gif|png|svg)$/,
+        type: 'asset/inline' //Asset Modulesのタイプ、url-loaderと同じことをやりたければasset/inlineを指定
       }
     ],
   },

@@ -654,5 +654,19 @@ webpack5ではAsset Modulesというアセットファイル(画像やフォン�
 
 ※webpack4まではurl-loaderが必要だったが、webpack5からいらなくなった
 
+webpack.common.js
 
+```js
+  module: {
+    rules: [
+      ...
+      {
+        test: /\.(jpe?g|gif|png|svg)$/,
+        type: 'asset/inline' //Asset Modulesのタイプ、url-loaderと同じことをやりたければasset/inline
+      }
+    ],
+```
+
+CSSはstyle-loaderを使ってhtml内部に展開されるようにする
+こうするとCSS内部のurlで読み込んだ画像はDataURLに変換されてバンドルに含まれるようになる
 
