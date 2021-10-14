@@ -13,6 +13,7 @@ module.exports = {
     //絶対パスを指定、OSにより指定が異なるのでpathモジュールを使う
     path: path.resolve(__dirname, 'public'), 
     filename: 'js/[name].bundle.js',
+    clean: true,
   },
   module: {
     rules: [

@@ -702,3 +702,46 @@ webpack.common.js
 
 例えば4KB未満の画像はDataURLに変換してバンドル、それ以上はバンドルせずに出力する
 
+webpack.common.js
+
+```javascript
+  module: {
+    rules: [
+...      
+     {
+        test: /\.(jpe?g|gif|png|svg)$/,
+        type: 'asset', //Asset Modulesのタイプ
+        parser: {
+          dataUrlCondition: {
+            maxSize: 4 * 1024, //4KB
+          }
+        },
+        generator: {
+          filename: 'images/[name][ext]',
+          publicPath: './',
+        }
+      }
+    ],
+  },
+```
+
+### 出力先をクリーンアップしてからファイルを出力する
+
+webpack5ではoutput.pathに指定したディレクトリ内のファイルを削除した後でバンドルされたファイルを出力することができる。outputの設定の箇所にclearn: trueをつけるだけ
+
+※ webpack4まではclean-webpack-pluginなどのプラグインが必要だったが、webpack5でいらなくなった
+
+webpack.common.js
+
+```javascript
+module.exports = {
+  ...
+  output: {
+    path: path.resolve(__dirname, 'public'), 
+    filename: 'js/[name].bundle.js',
+    clean: true, //output.pathのフォルダをバンドル前に削除する
+  },
+  ...
+}
+```
+
