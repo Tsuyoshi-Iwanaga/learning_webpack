@@ -35,7 +35,12 @@ module.exports = {
       },
       {
         test: /\.(jpe?g|gif|png|svg)$/,
-        type: 'asset/resource', //Asset Modulesのタイプ、file-loaderと同じことをやりたければasset/resourceを指定
+        type: 'asset', //Asset Modulesのタイプ
+        parser: {
+          dataUrlCondition: {
+            maxSize: 4 * 1024, //4KB
+          }
+        },
         generator: {
           filename: 'images/[name][ext]',
           publicPath: './',

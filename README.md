@@ -697,3 +697,8 @@ webpack.common.js
 ```
 
 今度はDataURLに変換されず、./images/profile.pngのように外部ファイルを参照するようになる
+
+### Asset Moduleでファイルサイズに応じてバンドルに含めるかどうかを判断する
+
+例えば4KB未満の画像はDataURLに変換してバンドル、それ以上はバンドルせずに出力する
+

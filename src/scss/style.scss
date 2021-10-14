@@ -1,7 +1,10 @@
 @import './_variables';
 body {
-  background: $black;
   color: $white;
+  background-color: $black;
+  background-repeat: no-repeat;
+  background-image: url('../images/profile_large.png');
+  background-size: 200px 200px;
   user-select: none;
 }
 
