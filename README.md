@@ -511,3 +511,61 @@ npm run dev
 npm run build
 ```
 
+### mini-css-extract-plugin
+
+バンドルされるCSSを個別のCSSファイルに抽出するプラグイン
+style-loaderを使うとstyleタグで出力されるが、この場合バンドルが大きくなったりCSSをキャッシュできないなどの問題点がある
+
+```shell
+npm install --save-dev mini-css-extract-plugin@1.4.0
+```
+
+webpack.common.js
+
+```js
+const path = require("path")
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+
+module.exports = {
+  entry: './src/js/app.js', //エントリーポイント
+  output: {
+    //絶対パスを指定、OSにより指定が異なるのでpathモジュールを使う
+    path: path.resolve(__dirname, 'public'), 
+    filename: 'js/bundle.js',
+  },
+  module: {
+    rules: [
+      {
+        test: /\.scss$/,
+        include: path.resolve(__dirname, 'src/scss'),
+        //複数のローダーがある場合は配列で記載する、ローダーは記載順とは逆から読み込まれるので注意
+        use: [
+          MiniCssExtractPlugin.loader,
+          // 'style-loader',
+          'css-loader',
+          'postcss-loader',
+          'sass-loader'
+        ],
+      }
+    ],
+  },
+  plugins: [
+    new MiniCssExtractPlugin({
+      //output.pathを起点にCSSが出力される
+      filename: './css/style.css'
+    })
+  ]
+}
+```
+
+この状態でビルドを実行するとpublic/css/style.cssが生成される
+またstyle-loaderをコメントアウトしているためバンドルには含まれなくなる
+
+### webpack-bundle-analyzer
+
+バンドルに含まれるモジュールおよびそのサイズを確認できるプラグイン
+
+```shell
+npm install --save-dev webpack-bundle-analyzer@4.4.0
+```
+

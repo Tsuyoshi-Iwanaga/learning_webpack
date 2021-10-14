@@ -1,4 +1,5 @@
 const path = require("path")
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 module.exports = {
   entry: './src/js/app.js', //エントリーポイント
@@ -18,8 +19,20 @@ module.exports = {
         test: /\.scss$/,
         include: path.resolve(__dirname, 'src/scss'),
         //複数のローダーがある場合は配列で記載する、ローダーは記載順とは逆から読み込まれるので注意
-        use: [ 'style-loader', 'css-loader', 'postcss-loader', 'sass-loader' ],
+        use: [
+          MiniCssExtractPlugin.loader,
+          // 'style-loader',
+          'css-loader',
+          'postcss-loader',
+          'sass-loader'
+        ],
       }
-    ]
-  }
+    ],
+  },
+  plugins: [
+    new MiniCssExtractPlugin({
+      //output.pathを起点にCSSが出力される
+      filename: './css/style.css'
+    })
+  ]
 }
