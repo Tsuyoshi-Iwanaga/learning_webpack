@@ -305,3 +305,76 @@ module.exports = {
 }
 ```
 
+### sass-loader / css-loader / style-loader
+
+Sassのファイルをバンドルに含めて出力する
+
+```shell
+npm install --save-dev sass@1.32.8 sass-loader@11.0.1 css-loader@5.2.0 style-loader@2.0.0
+```
+
+* sass : Sassをコンパイルするモジュール
+* sass-loader : Sassモジュールへ変換するローダー
+* css-loader : CSSをモジュールへ変換するローダー
+* style-loader : バンドルしたCSSをHTML内に挿入するローダー
+
+※ sassは以前はdart-sassと呼ばれていたモジュール、以前はnode-sassというモジュールを用いることもあったが、現在ではnode-sassは非推奨となっている
+
+src/js/app.js
+
+```js
+import '../scss/style.scss'
+```
+
+src/scss/_variables.scss
+
+```scss
+$black: #000;
+$white: #fff;
+```
+
+src/scss/style.scss
+
+```scss
+@import './_variables';
+body {
+  background: $black;
+  color: $white;
+}
+```
+
+webpack.config.js
+
+```shell
+const path = require("path")
+
+module.exports = {
+  mode: 'development', //develop production none
+  entry: './src/js/app.js', //エントリーポイント
+  output: {
+    //絶対パスを指定、OSにより指定が異なるのでpathモジュールを使う
+    path: path.resolve(__dirname, 'public'), 
+    filename: 'js/bundle.js',
+  },
+  module: {
+    rules: [
+      {
+        test: /\.scss$/,
+        include: path.resolve(__dirname, 'src/scss'),
+        //複数のローダーがある場合は配列で記載する、ローダーは記載順とは逆から読み込まれるので注意
+        use: [ 'style-loader', 'css-loader', 'sass-loader' ],
+      }
+    ]
+  }
+}
+```
+
+これでビルドするとhead内にstyleタグが挿入され、スタイルが反映される
+
+### post-css-loader
+
+PostCSSはJavaScriptでCSSを変換するためのプラグインを作成するためのツール
+CSSにベンダープレフィックスを自動挿入したり、CSSの圧縮ができたりする
+
+ここでは有名なAutoprefixerを用いてベンダープレフィックスを自動でつけるようにしてみる
+

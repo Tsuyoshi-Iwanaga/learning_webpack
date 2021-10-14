@@ -1,5 +1,6 @@
 import $ from 'jquery'
 import { add, subtract } from './modules/math'
+import '../scss/style.scss'
 
 const item1Price = 400
 const item2Price = 600
