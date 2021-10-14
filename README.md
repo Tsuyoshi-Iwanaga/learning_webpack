@@ -745,3 +745,28 @@ module.exports = {
 }
 ```
 
+### 開発用サーバ
+
+```shell
+npm install --save-dev webpack-dev-server@3.11.2
+```
+
+```json
+  "scripts": {
+    "start": "webpack serve",//package.jsonにサーバ起動用コマンドを追加
+    ...
+  },
+```
+
+webpack.common.js
+
+```js
+  devServer: {
+    open: true,
+    port: 9000,
+    contentBase: './public',
+  },
+```
+
+### ソースマップ
+
