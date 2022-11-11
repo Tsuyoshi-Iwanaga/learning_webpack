@@ -868,7 +868,6 @@ build(ビルド速度) rebuild(リビルド速度) production(本番環境利用
 npm install --save-dev html-webpack-plugin
 ```
 
-<<<<<<< HEAD
 ### 開発/本番でのコードの区別
 
 modeオプションにて設定された値(development/production)はアプリ配下の任意のコードから**process.env.NODE_ENV**でアクセスができる
@@ -882,7 +881,6 @@ if(process.env.NODE_ENV === 'development') {
   console.log('開発モード動作')
 }
 ```
-=======
 webpack.common.js
 
 ```javascript
@@ -968,4 +966,3 @@ webpack.common.js
 このようにするとpublic/js/vendor.bundle.jsというファイルが別途出力されるので、これをHTMLから別途読み込むことで共通化することができる
 
 ちなみに何が共通利用されるチャンクなのかはwebpackが自動で判別してくれる
->>>>>>> ad745d73581b7d50eb44cf43827ef4f30a5122ff
