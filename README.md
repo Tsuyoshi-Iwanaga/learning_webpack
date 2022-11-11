@@ -868,6 +868,7 @@ build(ビルド速度) rebuild(リビルド速度) production(本番環境利用
 npm install --save-dev html-webpack-plugin
 ```
 
+<<<<<<< HEAD
 ### 開発/本番でのコードの区別
 
 modeオプションにて設定された値(development/production)はアプリ配下の任意のコードから**process.env.NODE_ENV**でアクセスができる
@@ -881,3 +882,90 @@ if(process.env.NODE_ENV === 'development') {
   console.log('開発モード動作')
 }
 ```
+=======
+webpack.common.js
+
+```javascript
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+...
+  plugins: [
+    ...
+    new HtmlWebpackPlugin({
+      filename: 'index.html',
+      template: './src/ejs/index.ejs',
+      chunks: [ 'app' ],
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'search.html',
+      template: './src/ejs/search.ejs',
+      chunks: [ 'search' ],
+    }),
+  ]
+```
+
+## 最適化
+
+### Tree Shaking
+
+TreeShakingはデッドコード(使われていない不要なコード)を除去する機能
+ES Modules形式のモジュールであれば条件を満たした時に自動で適用される
+
+※productionモードでバンドルした時にTree Shakingが有効になる
+
+以下はライブラリから必要な関数だけをimportしている例
+この場合はライブラリの余分なコードはTree Shakingによって除去される
+
+```js
+import { upperCase } from 'lodash-es'
+const text = upperCase("hello webpack app")
+```
+
+以下のようにライブラリ全体をimportしてしまうとTree Shakingされない
+
+```js
+import _ from 'lodash_es'
+const text = _.upperCase('hello webpack app')
+```
+
+### SplitChunksPlugin
+
+チャンクを分割したファイルを出力するためのプラグイン
+チャンクとはバンドルを構成するコードおよびファイルのことを指す
+
+SplitChunksPluginを使うと複数のエントリーポイントにて共有されるチャンクを分割して出力することができる
+
+* 通常の出力 : 共通のチャンクがあってもそれぞれのエントリーポイント毎に重複してバンドルされる
+* SplitChunksPlugin利用 : 共通のチャンクは別ファイルとして出力される、キャッシュされる
+
+webpack.common.js
+
+```js
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        vendor: { //ここではvendorだが任意のものを設定できる
+          chunks: 'initial', // initial: 静的にインポート, async: ダイナミックインポート, all: 全て
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendor'
+        }
+      }
+    },
+    ...
+    new HtmlWebpackPlugin({
+      filename: 'index.html',
+      template: './src/ejs/index.ejs',
+      chunks: [ 'app', 'vendor' ], //HTMLに読み込ませるためvendorを追加
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'search.html',
+      template: './src/ejs/search.ejs',
+      chunks: [ 'search', 'vendor'], //HTMLに読み込ませるためvendorを追加
+    }),
+  ]
+  },
+```
+
+このようにするとpublic/js/vendor.bundle.jsというファイルが別途出力されるので、これをHTMLから別途読み込むことで共通化することができる
+
+ちなみに何が共通利用されるチャンクなのかはwebpackが自動で判別してくれる
+>>>>>>> ad745d73581b7d50eb44cf43827ef4f30a5122ff

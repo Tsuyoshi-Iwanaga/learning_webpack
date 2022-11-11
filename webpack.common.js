@@ -21,6 +21,17 @@ module.exports = {
     port: 9000,
     contentBase: './public',
   },
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        vendor: { //ここではvendorだが任意のものを設定できる
+          chunks: 'initial', // initial: 静的にインポート, async: ダイナミックインポート, all: 全て
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendor'
+        }
+      }
+    }
+  },
   module: {
     rules: [
       {
@@ -64,12 +75,12 @@ module.exports = {
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: './src/ejs/index.ejs',
-      chunks: [ 'app' ],
+      chunks: [ 'app', 'vendor' ],
     }),
     new HtmlWebpackPlugin({
       filename: 'search.html',
       template: './src/ejs/search.ejs',
-      chunks: [ 'search' ],
+      chunks: [ 'search', 'vendor'],
     }),
   ]
 }
