@@ -23,6 +23,14 @@ webpackでよく使われる用語は次の通り
 * バンドル : webpackでまとめられたファイル
 * ビルド : バンドルを生成するまでの一連の処理
 
+JSのモジュール形式については歴史的は背景もありいくつかのパターンがある
+ただし、現在はES Modulesに落ち着いてきており、これを使うのが一般的
+ちなみにwebpackでは下記のいずれも解釈できる（プロジェクト内で混在していても可)
+
+* CommonJS : サーバサイドはじめJSの標準APIを目指したプロジェクト、Node.jsで採用され有名になる
+* AMD : Asynchronous Module Definition モジュールと依存関係を定義し、必要に応じて非同期にロードするためのAPIを定義している、RequireJSなどによる実装が有名
+* ES Modules : ECMAScript 2015で標準化されたモジュールの仕様、現在ほぼデファクトになりつつある
+
 ### package.jsonの生成
 
 ```shell
@@ -112,12 +120,23 @@ npm install --save jquery@3.6.0
 
 モジュールのインストール時に--save-devをつけるとdevDependencies、--saveをつけるとdependenciesになる
 
+例えばdevDependenciesとdependenciesを分けておくと、本番環境では下記のようにしてビルド時にのみ必要なモジュールを除いてインストールすることもできる
+
+```shell
+npm install --production
+```
+
 ### npmスクリプトへの登録
 
 webpackは以下のコマンドで実行することが可能
 
 ```shell
 node_modules/.bin/webpack
+```
+もしくはnpxコマンドを使うとnode_modulesにあるバイナリを実行できるので下記でも可能
+
+```shell
+npx webpack
 ```
 
 ただし通常はnpm scriptsというものを経由して実行する
@@ -154,8 +173,19 @@ module.export = {
 }
 ```
 
+まず基本となる項目は上記にもある下記の項目を抑えておく
+
+* mode : development
+* entry : エントリーポイントとなるファイルを指定
+* output : バンドルの出力先
+* output/path : 出力先のフォルダ
+* output/filename : 出力先のファイル名
+
 modeは必須、developmentを指定するとソースマップが出力されるなど開発に便利なバンドルを生成する
 一方productionでは圧縮やモジュールの最適化など本番で使うのに適したバンドルを生成する
+
+entryはデフォルトでは/src/index.js
+outputはデフォルトでは/dist/main.js
 
 ### モジュールを作成してみる
 
@@ -260,7 +290,11 @@ public/index.html
 ## ローダー
 
 ローダーは**色々な形式のファイルをバンドルできるように変換する**プログラム
-例えばCSSや画像などはそのままだとバンドルに含めることはできないのでwebpackでバンドルする前に一度ローダーでファイルを変換する必要がある
+例えばCSSや画像などはそのままだとバンドルに含めることはできないのでwebpackでバンドルする前に一度ローダーでファイルを変換しwebpackがバンドルできるようにする必要がある
+具体的にはBase64形式に変換したうえで、JSで処理できる形式に変換をおこなう
+
+ローダーを使うにはnpm経由でインストールした後、module/rulesのパラメータにて設定をおこなう
+さらにrulesパラメータにはローダーを適用するファイル(test)と適用するローダー(use)を指定する
 
 ### babel-loader
 
@@ -425,7 +459,9 @@ module.exports = {
 
 バンドルの開始から完了までは様々なプロセスがあり、どこのタイミングに処理を挟み込むかはプラグインごとに異なっている
 
-### web pack-merge
+プラグインを用いるにはrequire関数でインポートした後に、pluginsパラメータ配下で登録を行う
+
+### webpack-merge
 
 webpackの設定をマージするためのプラグイン
 これを利用することで開発用/本番用で共通の設定は一つのファイルで管理しつつ、差分がある部分は別の設定ファイルで管理することができるようになる
@@ -758,6 +794,15 @@ npm install --save-dev webpack-dev-server@3.11.2
   },
 ```
 
+もしくはこのように記載
+
+```json
+  "scripts": {
+    "start": "webpack-dev-server",//package.jsonにサーバ起動用コマンドを追加
+    ...
+  },
+```
+
 webpack.common.js
 
 ```js
@@ -767,6 +812,29 @@ webpack.common.js
     contentBase: './public',
   },
 ```
+
+以下のようなオプションが用意されている
+
+* host : 使用するホスト(デフォルトはlocalhost)
+* port : 使用するポート(デフォルトは8080)
+* socket : 使用するUnixソケット(hostのかわりに利用)
+* headers : 応答ヘッダーを「ヘッダー名: 値」のオブジェクト形式で指定
+* https : https機能を有効にするか
+* open : 起動時にブラウザで開くか
+* openPage : 起動時に開くページ
+* lazy : 遅延モードを有効にするか(有効にするとファイル変更を監視しない)
+* compress : gzip圧縮を有効にするか
+* quiet : スタートアップログを除きログ出力を無効化
+* clientLogLevel : ログレベルの指定(silent/trace/debug/info(デフォルト)/warn/error)
+* overlay : コンパイルエラー時にブラウザにオーバレイをラップする
+* watchOption : ファイル監視のオプションをオブジェクトで指定
+* watchOption/aggregateTimeout : 次回ビルドまでの遅延時間(デフォルトは200ms)
+* watchOption/ignored : 監視を除外するフォルダー
+* watchOption/poll : ポーリング時間(ms)
+* watchOption/info-verbosity : 監視メッセージのレベル(none/info/verbose)
+
+また開発サーバはビルド結果をメモリ上で管理しているため出力先にはバンドルを生成しない
+よってバンドルに更新をかけたい場合は別途ビルドの処理を実行する必要がある
 
 ### ソースマップ
 
@@ -781,9 +849,35 @@ webpack.common.js
 
 上記はローダーで変換された後のコードなので、デバッグがしづらければevel-cheap-module-source-mapもしくはeval-source-mapを指定するとよい
 
+devtoolに設定できるパラメータについては公式を確認する
+https://webpack.js.org/configuration/devtool/
+
+build(ビルド速度) rebuild(リビルド速度) production(本番環境利用向けか) quality(生成されるマップの内容)
+
+またqualityの列に示されている値の意味は以下の通り
+* bundled code : バンドルされた最終的な結果を表示(各モジュールごとには参照できない)
+* generated code : モジュール単位に分離されたコード
+* transformed code : モジュール単位に分離されたコード(ローダー変換された結果)
+* original source : オリジナルのコードを再現
+* without source content : ソースはマップに含まれない(別途サーバ経由でソース取得)
+* lines only : 行単位のマッピング
+
 ### HTMLの自動生成
 
 ```shell
 npm install --save-dev html-webpack-plugin
 ```
 
+### 開発/本番でのコードの区別
+
+modeオプションにて設定された値(development/production)はアプリ配下の任意のコードから**process.env.NODE_ENV**でアクセスができる
+
+一例として本番だけログを出力したいなどの場合は以下のようにする
+
+```js
+console.log(process.env.NODE_ENV)
+
+if(process.env.NODE_ENV === 'development') {
+  console.log('開発モード動作')
+}
+```
